@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Import Premium – Cotizador Profesional</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --gold:#C9A84C;
+  --gold-light:#E8C96A;
+  --gold-dim:#8B6E2E;
+  --dark:#0D0D0D;
+  --dark2:#141414;
+  --dark3:#1C1C1C;
+  --dark4:#242424;
+  --border:#2E2E2E;
+  --border-gold:rgba(201,168,76,0.3);
+  --text:#F0EDE6;
+  --text2:#A09880;
+  --text3:#6B6355;
+  --red:#C0392B;
+  --green:#27AE60;
+  --radius:10px;
+  --radius-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;font-size:14px}
+
+/* ── LAYOUT ── */
+.page{max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,var(--dark2) 0%,#1a1500 60%,var(--dark2) 100%);
+  border-bottom:1px solid var(--border-gold);
+  padding:28px 40px;
+  display:flex;align-items:center;gap:28px;
+  position:relative;overflow:hidden
+}
+.header::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:240px;height:240px;
+  background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);
+  pointer-events:none
+}
+.header::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)
+}
+.logo-wrap{
+  width:80px;height:80px;border-radius:14px;
+  border:1.5px solid var(--border-gold);
+  background:var(--dark3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;overflow:hidden;cursor:pointer;position:relative
+}
+.logo-wrap img{width:100%;height:100%;object-fit:cover;border-radius:13px}
+.logo-wrap .logo-placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:10px;color:var(--text3)
+}
+.logo-wrap .logo-placeholder svg{width:28px;height:28px;opacity:.4}
+#logo-input{display:none}
+.brand{flex:1}
+.brand-name{
+  font-family:'Playfair Display',serif;font-size:30px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dim));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:0.04em;line-height:1
+}
+.brand-tagline{
+  font-size:12px;color:var(--gold-dim);font-style:italic;
+  letter-spacing:0.12em;margin-top:4px;text-transform:uppercase
+}
+.contact-info{
+  display:flex;flex-direction:column;gap:5px;
+  text-align:right
+}
+.contact-info a,.contact-info span{
+  font-size:12px;color:var(--text2);display:flex;align-items:center;
+  gap:6px;justify-content:flex-end;text-decoration:none;transition:color .2s
+}
+.contact-info a:hover{color:var(--gold)}
+.ci-icon{width:14px;height:14px;opacity:.6;flex-shrink:0}
+
+/* ── SECTION ── */
+.section{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px 28px;margin-top:20px
+}
+.section-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:20px;
+  padding-bottom:14px;border-bottom:1px solid var(--border)
+}
+.section-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.05));
+  border:1px solid var(--border-gold);
+  display:flex;align-items:center;justify-content:center;font-size:15px
+}
+.section-title{
+  font-family:'Playfair Display',serif;font-size:16px;font-weight:500;
+  color:var(--gold-light)
+}
+.section-badge{
+  margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;
+  background:rgba(201,168,76,.1);color:var(--gold);border:1px solid var(--border-gold)
+}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.span-2{grid-column:span 2}
+.span-3{grid-column:span 3}
+
+/* ── FIELDS ── */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.field input,.field select{
+  background:var(--dark3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;
+  transition:border .2s,box-shadow .2s;width:100%
+}
+.field input:focus,.field select:focus{
+  outline:none;border-color:var(--gold-dim);
+  box-shadow:0 0 0 3px rgba(201,168,76,.08)
+}
+.field select option{background:var(--dark3)}
+.auto-field{
+  background:var(--dark4);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 14px;font-size:13px;color:var(--gold);font-weight:500
+}
+
+/* ── EXCHANGE RATE BAR ── */
+.fx-bar{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.02));
+  border:1px solid var(--border-gold);border-radius:var(--radius);
+  padding:14px 18px
+}
+.fx-bar label{font-size:12px;color:var(--text2);white-space:nowrap}
+.fx-bar input{
+  background:var(--dark3);border:1px solid var(--border-gold);border-radius:8px;
+  padding:8px 12px;font-size:15px;font-weight:600;color:var(--gold);
+  width:110px;text-align:center;font-family:'DM Sans',sans-serif
+}
+.fx-bar input:focus{outline:none;border-color:var(--gold)}
+.fx-example{font-size:12px;color:var(--text3);font-style:italic}
+.fx-example span{color:var(--gold-dim)}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;min-width:820px}
+thead tr{background:linear-gradient(90deg,var(--dark3),var(--dark4))}
+th{
+  padding:12px 10px;font-size:11px;font-weight:600;color:var(--gold);
+  text-align:center;white-space:nowrap;letter-spacing:.05em;text-transform:uppercase;
+  border-bottom:1px solid var(--border-gold)
+}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:hover{background:rgba(201,168,76,.03)}
+td{padding:8px 6px;text-align:center;vertical-align:middle}
+td input{
+  background:var(--dark3);border:1px solid var(--border);border-radius:7px;
+  padding:7px 9px;font-size:12px;color:var(--text);width:100%;
+  font-family:'DM Sans',sans-serif;text-align:right;transition:border .2s
+}
+td input.left{text-align:left}
+td input:focus{outline:none;border-color:var(--gold-dim)}
+.td-auto{
+  font-size:13px;font-weight:600;color:var(--gold);padding:8px 10px
+}
+.td-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);font-size:16px;padding:4px 8px;
+  border-radius:6px;transition:all .2s
+}
+.td-del:hover{color:var(--red);background:rgba(192,57,43,.1)}
+
+/* ── IMG CELL ── */
+.img-cell{width:70px}
+.img-btn{
+  width:58px;height:58px;border:1.5px dashed var(--border);border-radius:8px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;font-size:9px;color:var(--text3);gap:3px;
+  transition:all .2s;margin:0 auto;background:var(--dark3)
+}
+.img-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
+.img-btn svg{width:16px;height:16px}
+.img-preview{width:58px;height:58px;object-fit:cover;border-radius:8px;display:none;margin:0 auto;border:1px solid var(--border-gold);cursor:pointer}
+
+/* ── BUTTONS ── */
+.btn-add{
+  display:flex;align-items:center;gap:8px;
+  border:1.5px dashed var(--border);border-radius:var(--radius);
+  padding:10px 18px;font-size:13px;color:var(--text2);
+  cursor:pointer;background:transparent;margin-top:14px;
+  transition:all .2s;font-family:'DM Sans',sans-serif
+}
+.btn-add:hover{border-color:var(--gold-dim);color:var(--gold)}
+.btn-upload-excel{
+  display:flex;align-items:center;gap:8px;
+  border:1px solid var(--border-gold);border-radius:var(--radius);
+  padding:10px 18px;font-size:13px;color:var(--gold);
+  cursor:pointer;background:rgba(201,168,76,.06);margin-top:14px;
+  transition:all .2s;font-family:'DM Sans',sans-serif
+}
+.btn-upload-excel:hover{background:rgba(201,168,76,.12)}
+
+/* ── TOTALS ── */
+.totals-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.total-block{background:var(--dark3);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px}
+.total-block-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.total-row:last-child{border-bottom:none}
+.total-row .lbl{color:var(--text2)}
+.total-row .val{font-weight:600;color:var(--text)}
+.total-row .val.gold{color:var(--gold)}
+.total-row .val.green{color:var(--green)}
+
+.extra-inputs{display:flex;flex-direction:column;gap:10px}
+.extra-row{display:flex;align-items:center;gap:12px}
+.extra-row label{font-size:12px;color:var(--text2);min-width:180px}
+.extra-row input{
+  background:var(--dark3);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;font-size:13px;color:var(--text);width:160px;text-align:right;
+  font-family:'DM Sans',sans-serif
+}
+.extra-row input:focus{outline:none;border-color:var(--gold-dim)}
+.extra-row .auto-tag{font-size:11px;color:var(--text3);font-style:italic}
+
+/* ── GRAND TOTAL ── */
+.grand-total{
+  background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.03));
+  border:1px solid var(--border-gold);border-radius:var(--radius-lg);
+  padding:24px 32px;margin-top:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px
+}
+.grand-total-label{
+  font-family:'Playfair Display',serif;font-size:20px;color:var(--text2)
+}
+.grand-total-amount{
+  font-family:'Playfair Display',serif;font-size:36px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent
+}
+.grand-total-sub{font-size:12px;color:var(--text3);margin-top:4px}
+
+/* ── EXPORT BUTTONS ── */
+.export-bar{
+  display:flex;gap:12px;margin-top:20px;flex-wrap:wrap
+}
+.btn-export{
+  flex:1;min-width:160px;padding:14px 20px;border-radius:var(--radius);
+  font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'DM Sans',sans-serif;border:none
+}
+.btn-pdf{background:var(--red);color:#fff}
+.btn-pdf:hover{background:#A93226}
+.btn-excel{background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--border-gold)}
+.btn-excel:hover{background:rgba(201,168,76,.25)}
+.btn-print{background:var(--dark3);color:var(--text2);border:1px solid var(--border)}
+.btn-print:hover{color:var(--text);border-color:var(--text2)}
+
+/* ── DRIVE STATUS ── */
+.drive-status{
+  display:none;margin-top:12px;padding:10px 16px;
+  border-radius:var(--radius);background:var(--dark3);
+  font-size:13px;text-align:center;border:1px solid var(--border)
+}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  background:var(--dark3);color:var(--text);padding:12px 24px;
+  border-radius:10px;font-size:13px;opacity:0;transition:opacity .3s;
+  pointer-events:none;z-index:999;border:1px solid var(--border-gold);
+  box-shadow:0 8px 32px rgba(0,0,0,.4)
+}
+.toast.show{opacity:1}
+
+/* ── PRINT ── */
+@media print{
+  body{background:#fff;color:#000}
+  .export-bar,.btn-add,.btn-upload-excel,.td-del,.img-btn{display:none!important}
+  .header{background:#1a1500;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .section,.grand-total{border:1px solid #ddd}
+  .grand-total-amount{color:#C9A84C!important;-webkit-text-fill-color:#C9A84C!important}
+  table{min-width:unset}
+}
+
+@media(max-width:640px){
+  .header{flex-wrap:wrap;padding:20px}
+  .contact-info{text-align:left}
+  .contact-info a,.contact-info span{justify-content:flex-start}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .span-2,.span-3{grid-column:span 1}
+  .totals-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
+<div class="header" id="doc-header">
+  <div class="logo-wrap" onclick="document.getElementById('logo-input').click()" title="Clic para subir logo">
+    <div class="logo-placeholder" id="logo-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="2"/><path d="m21 15-5-5L5 21"/></svg>
+      <span>Logo</span>
+    </div>
+    <img id="logo-img" src="" alt="Logo" style="display:none"/>
+  </div>
+  <input type="file" id="logo-input" accept="image/*" onchange="loadLogo()"/>
+
+  <div class="brand">
+    <div class="brand-name">IMPORT PREMIUM</div>
+    <div class="brand-tagline">Somos tu mejor opción</div>
+  </div>
+
+  <div class="contact-info">
+    <span>
+      <svg class="ci-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Guayaquil, Ecuador
+    </span>
+    <a href="mailto:info@importpremium.com">
+      <svg class="ci-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      info@importpremium.com
+    </a>
+    <a href="https://wa.me/593999999999">
+      <svg class="ci-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+      +593 99 999 9999
+    </a>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════════
+     CLIENTE
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">👤</div>
+    <div class="section-title">Detalle del Cliente</div>
+    <div class="section-badge" id="proforma-num">PRO FORMA #001</div>
+  </div>
+  <div class="grid-3">
+    <div class="field span-2"><label>Nombre completo</label><input id="c-nombre" placeholder="Juan Pérez García"/></div>
+    <div class="field"><label>Fecha de emisión</label><div class="auto-field" id="c-fecha"></div></div>
+    <div class="field span-2"><label>Dirección</label><input id="c-dir" placeholder="Av. Principal 123"/></div>
+    <div class="field"><label>Ciudad</label><input id="c-ciudad" placeholder="Guayaquil"/></div>
+    <div class="field"><label>País</label>
+      <select id="c-pais">
+        <option value="">— Seleccionar —</option>
+        <option>Ecuador</option><option>Colombia</option><option>Perú</option>
+        <option>Venezuela</option><option>Bolivia</option><option>Chile</option>
+        <option>Argentina</option><option>Uruguay</option><option>Paraguay</option>
+        <option>Brasil</option><option>México</option><option>Guatemala</option>
+        <option>Honduras</option><option>El Salvador</option><option>Nicaragua</option>
+        <option>Costa Rica</option><option>Panamá</option><option>Cuba</option>
+        <option>República Dominicana</option><option>Puerto Rico</option>
+        <option>España</option><option>Estados Unidos</option><option>China</option>
+        <option>Otro</option>
+      </select>
+    </div>
+    <div class="field"><label>Teléfono / WhatsApp</label><input id="c-tel" placeholder="+593 99 999 9999"/></div>
+    <div class="field span-2"><label>Correo electrónico</label><input id="c-email" type="email" placeholder="cliente@email.com"/></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TIPO DE CAMBIO
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">💱</div>
+    <div class="section-title">Configuración de Moneda</div>
+  </div>
+  <div class="fx-bar">
+    <label>Tipo de cambio RMB → USD:</label>
+    <input type="number" id="tasa" value="6.80" step="0.01" min="0.01" oninput="recalcAll()"/>
+    <div class="fx-example">
+      Ejemplo: RMB <span id="ex-rmb">200</span> ÷ <span id="ex-tc">6.80</span> = USD <span id="ex-usd">29.41</span> × Cant. <span id="ex-qty">3</span> = Subtotal <span id="ex-sub">88.23</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRODUCTOS
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">📦</div>
+    <div class="section-title">Detalle del Producto</div>
+    <div class="section-badge" id="badge-items">0 productos</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="img-cell">Imagen</th>
+          <th style="width:80px">Código</th>
+          <th style="min-width:160px">Nombre</th>
+          <th style="min-width:180px">Descripción</th>
+          <th style="width:110px">Precio RMB</th>
+          <th style="width:110px">Precio USD</th>
+          <th style="width:80px">Cantidad</th>
+          <th style="width:110px">Subtotal</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="prod-body"></tbody>
+    </table>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn-add" onclick="addRow()">＋ Agregar producto</button>
+    <button class="btn-upload-excel" onclick="document.getElementById('excel-input').click()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Cargar desde Excel
+    </button>
+    <input type="file" id="excel-input" accept=".xlsx,.xls" style="display:none" onchange="loadFromExcel(this)"/>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TOTALES + ADICIONALES
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🧮</div>
+    <div class="section-title">Resumen y Valores Adicionales</div>
+  </div>
+
+  <div class="totals-grid">
+    <!-- Izquierda: adicionales -->
+    <div class="total-block">
+      <div class="total-block-title">Valores adicionales</div>
+      <div class="extra-inputs">
+        <div class="extra-row">
+          <label>Honorarios de aduana (USD):</label>
+          <input type="number" id="honorarios" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="extra-row">
+          <label>Flete (USD):</label>
+          <input type="number" id="flete" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="extra-row">
+          <label>Seguro (1% del total productos):</label>
+          <div class="auto-field" id="seguro-val" style="width:160px;text-align:right">$0.00</div>
+          <span class="auto-tag">automático</span>
+        </div>
+        <div class="extra-row">
+          <label>Total de impuestos (USD):</label>
+          <input type="number" id="impuestos" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Derecha: resumen -->
+    <div class="total-block">
+      <div class="total-block-title">Resumen general</div>
+      <div class="total-row"><span class="lbl">Total productos</span><span class="val gold" id="t-productos">$0.00</span></div>
+      <div class="total-row"><span class="lbl">Total impuestos</span><span class="val" id="t-impuestos">$0.00</span></div>
+      <div class="total-row"><span class="lbl">Flete</span><span class="val" id="t-flete">$0.00</span></div>
+      <div class="total-row"><span class="lbl">Honorarios aduana</span><span class="val" id="t-honorarios">$0.00</span></div>
+      <div class="total-row"><span class="lbl">Seguro</span><span class="val" id="t-seguro">$0.00</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TOTAL FINAL
+══════════════════════════════════════════ -->
+<div class="grand-total">
+  <div>
+    <div class="grand-total-label">TOTAL FINAL A PAGAR</div>
+    <div class="grand-total-sub">Productos + Impuestos + Valores adicionales</div>
+  </div>
+  <div style="text-align:right">
+    <div class="grand-total-amount" id="grand-total">$0.00</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px" id="grand-total-rmb"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EXPORTAR
+══════════════════════════════════════════ -->
+<div class="export-bar">
+  <button class="btn-export btn-pdf" onclick="exportPDF()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Descargar PDF
+  </button>
+  <button class="btn-export btn-excel" onclick="exportExcel()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Descargar Excel
+  </button>
+  <button class="btn-export btn-print" onclick="window.print()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Imprimir
+  </button>
+</div>
+<div class="drive-status" id="drive-status"></div>
+
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── APPS SCRIPT URL (opcional – para subir a Drive) ──────────
+const APPS_SCRIPT_URL = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT';
+
+// ── Estado ───────────────────────────────────────────────────
+let rows = [], rowId = 0;
+const imgData = {};
+
+// ── Utils ────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const usd = n => '$' + parseFloat(n||0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const tc  = () => parseFloat($('tasa').value) || 6.80;
+
+function toast(msg, dur=3000){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+// ── Init ─────────────────────────────────────────────────────
+(function init(){
+  const now = new Date();
+  $('c-fecha').textContent = now.toLocaleDateString('es-EC',{day:'2-digit',month:'long',year:'numeric'});
+  $('proforma-num').textContent = 'PRO FORMA #' + String(Math.floor(Math.random()*900)+100);
+  updateExample();
+  addRow(); addRow(); addRow();
+})();
+
+// ── Logo ─────────────────────────────────────────────────────
+function loadLogo(){
+  const f = $('logo-input').files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    $('logo-img').src = e.target.result;
+    $('logo-img').style.display = 'block';
+    $('logo-placeholder').style.display = 'none';
+  };
+  r.readAsDataURL(f);
+}
+
+// ── Ejemplo tipo de cambio ────────────────────────────────────
+function updateExample(){
+  const t = tc();
+  const rmb=200, qty=3, u=(rmb/t), sub=u*qty;
+  $('ex-tc').textContent = t.toFixed(2);
+  $('ex-usd').textContent = u.toFixed(2);
+  $('ex-sub').textContent = sub.toFixed(2);
+}
+
+// ── Agregar fila ──────────────────────────────────────────────
+function addRow(){
+  const id = ++rowId;
+  rows.push(id);
+  const tbody = $('prod-body');
+  const tr = document.createElement('tr');
+  tr.id = 'row-'+id;
+  tr.innerHTML = `
+    <td class="img-cell">
+      <input type="file" accept="image/*" style="display:none" id="file-${id}" onchange="previewImg(${id})"/>
+      <div class="img-btn" id="ibtn-${id}" onclick="$('file-${id}').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <span>Foto</span>
+      </div>
+      <img class="img-preview" id="ipr-${id}" onclick="$('file-${id}').click()"/>
+    </td>
+    <td><input placeholder="COD-001" id="code-${id}"/></td>
+    <td><input class="left" placeholder="Nombre producto" id="name-${id}" oninput="recalcAll()"/></td>
+    <td><input class="left" placeholder="Descripción..." id="desc-${id}"/></td>
+    <td><input type="number" placeholder="0.00" min="0" step="0.01" id="rmb-${id}" oninput="calcRow(${id})"/></td>
+    <td class="td-auto" id="usd-${id}">$0.00</td>
+    <td><input type="number" placeholder="1" min="0" step="1" id="qty-${id}" value="1" oninput="calcRow(${id})"/></td>
+    <td class="td-auto" id="sub-${id}">$0.00</td>
+    <td><button class="td-del" onclick="delRow(${id})">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+  recalcAll();
+}
+
+function previewImg(id){
+  const f = $('file-'+id)?.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img=$('ipr-'+id), btn=$('ibtn-'+id);
+    img.src=e.target.result; img.style.display='block'; btn.style.display='none';
+    imgData[id]=e.target.result;
+  };
+  r.readAsDataURL(f);
+}
+
+function delRow(id){
+  $('row-'+id)?.remove();
+  rows=rows.filter(r=>r!==id);
+  delete imgData[id];
+  recalcAll();
+}
+
+// ── Calcular fila ─────────────────────────────────────────────
+function calcRow(id){
+  const rmb = parseFloat($('rmb-'+id)?.value)||0;
+  const qty = parseFloat($('qty-'+id)?.value)||1;
+  const t   = tc();
+  const u   = rmb/t;
+  const s   = u*qty;
+  const uEl=$('usd-'+id), sEl=$('sub-'+id);
+  if(uEl) uEl.textContent = usd(u);
+  if(sEl) sEl.textContent = usd(s);
+  recalcAll();
+}
+
+// ── Recalcular totales ────────────────────────────────────────
+function recalcAll(){
+  updateExample();
+  let totalProd = 0;
+  rows.forEach(id=>{
+    const rmb = parseFloat($('rmb-'+id)?.value)||0;
+    const qty = parseFloat($('qty-'+id)?.value)||1;
+    const u = rmb/tc();
+    const s = u*qty;
+    const uEl=$('usd-'+id), sEl=$('sub-'+id);
+    if(uEl) uEl.textContent = usd(u);
+    if(sEl) sEl.textContent = usd(s);
+    totalProd += s;
+  });
+
+  const seguro     = totalProd * 0.01;
+  const imp        = parseFloat($('impuestos').value)||0;
+  const flete      = parseFloat($('flete').value)||0;
+  const honorarios = parseFloat($('honorarios').value)||0;
+  const total      = totalProd + imp + flete + honorarios + seguro;
+
+  $('t-productos').textContent   = usd(totalProd);
+  $('t-impuestos').textContent   = usd(imp);
+  $('t-flete').textContent       = usd(flete);
+  $('t-honorarios').textContent  = usd(honorarios);
+  $('t-seguro').textContent      = usd(seguro);
+  $('seguro-val').textContent    = usd(seguro);
+  $('grand-total').textContent   = usd(total);
+  $('grand-total-rmb').textContent = `≈ RMB ${(total*tc()).toFixed(2)}`;
+  $('badge-items').textContent   = rows.length+' producto'+(rows.length!==1?'s':'');
+}
+
+$('tasa').addEventListener('input', recalcAll);
+
+// ── Carga masiva desde Excel ──────────────────────────────────
+function loadFromExcel(input){
+  const f = input.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const wb = XLSX.read(e.target.result,{type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(ws,{defval:''});
+      if(!data.length){ toast('⚠ El Excel está vacío'); return; }
+      // Limpiar filas existentes
+      rows.forEach(id=>$('row-'+id)?.remove());
+      rows=[]; rowId=0;
+      data.forEach(row=>{
+        addRow();
+        const id=rowId;
+        const code  = row.codigo||row.Codigo||row.CODIGO||'';
+        const name  = row.nombre||row.Nombre||row.NOMBRE||'';
+        const desc  = row.descripcion||row.Descripcion||row.DESCRIPCION||'';
+        const prmb  = row.precio_rmb||row.PrecioRMB||row.precio||0;
+        const imgU  = row.imagen_url||row.ImagenURL||row.imagen||'';
+        if($('code-'+id))  $('code-'+id).value = code;
+        if($('name-'+id))  $('name-'+id).value = name;
+        if($('desc-'+id))  $('desc-'+id).value = desc;
+        if($('rmb-'+id))   $('rmb-'+id).value  = prmb;
+        if(imgU){
+          const img=$('ipr-'+id), btn=$('ibtn-'+id);
+          if(img&&btn){ img.src=imgU; img.style.display='block'; btn.style.display='none'; }
+        }
+        calcRow(id);
+      });
+      toast(`✅ ${data.length} productos cargados desde Excel`);
+    } catch(err){ toast('❌ Error al leer el Excel: '+err.message); }
+  };
+  reader.readAsArrayBuffer(f);
+  input.value='';
+}
+
+// ── Export Excel ──────────────────────────────────────────────
+function exportExcel(){
+  const cliente = $('c-nombre').value||'cliente';
+  const nPF     = $('proforma-num').textContent;
+  const fecha   = $('c-fecha').textContent;
+  const t       = tc();
+
+  const wb = XLSX.utils.book_new();
+
+  // Build data
+  const wsData=[];
+  const header = (v,rgb) => ({v,s:{font:{bold:true,color:{rgb:'FFFFFF'},sz:11},fill:{patternType:'solid',fgColor:{rgb:rgb||'0D0D0D'}},alignment:{horizontal:'center',vertical:'center'}}});
+  const cell   = (v,bold) => ({v,s:{font:{bold:!!bold,sz:10},alignment:{horizontal:'center',vertical:'center'}}});
+  const gold   = v => ({v,s:{font:{bold:true,sz:11,color:{rgb:'C9A84C'}},alignment:{horizontal:'center',vertical:'center'}}});
+
+  wsData.push([{v:'IMPORT PREMIUM – COTIZACIÓN PRO FORMA',s:{font:{bold:true,sz:16,color:{rgb:'C9A84C'}},fill:{patternType:'solid',fgColor:{rgb:'141414'}},alignment:{horizontal:'center',vertical:'center'}}},null,null,null,null,null,null,null]);
+  wsData.push([{v:`Cliente: ${$('c-nombre').value||''}   |   Fecha: ${fecha}   |   País: ${$('c-pais').value||''}   |   ${nPF}`,s:{font:{sz:10},alignment:{horizontal:'center'}}},null,null,null,null,null,null,null]);
+  wsData.push([]);
+  wsData.push([header('IMAGEN'),header('CÓDIGO'),header('NOMBRE'),header('DESCRIPCIÓN'),header('PRECIO RMB'),header('PRECIO USD'),header('CANTIDAD'),header('SUBTOTAL USD')]);
+
+  let totalProd=0;
+  rows.forEach((id,i)=>{
+    const rmb = parseFloat($('rmb-'+id)?.value)||0;
+    const qty = parseFloat($('qty-'+id)?.value)||1;
+    const u   = rmb/t;
+    const s   = u*qty;
+    totalProd+=s;
+    const bg = i%2===0?'1C1C1C':'242424';
+    wsData.push([
+      cell(imgData[id]?'[ver imagen]':'',false),
+      cell($('code-'+id)?.value||''),
+      cell($('name-'+id)?.value||''),
+      cell($('desc-'+id)?.value||''),
+      {v:rmb,s:{font:{sz:10},numFmt:'#,##0.00',alignment:{horizontal:'center'}}},
+      {v:u,  s:{font:{sz:10},numFmt:'$#,##0.00',alignment:{horizontal:'center'}}},
+      {v:qty,s:{font:{sz:10},numFmt:'#,##0',alignment:{horizontal:'center'}}},
+      {v:s,  s:{font:{bold:true,sz:10,color:{rgb:'C9A84C'}},numFmt:'$#,##0.00',alignment:{horizontal:'center'}}},
+    ]);
+  });
+
+  const seguro=totalProd*0.01, imp=parseFloat($('impuestos').value)||0;
+  const flete=parseFloat($('flete').value)||0, hon=parseFloat($('honorarios').value)||0;
+  const total=totalProd+imp+flete+hon+seguro;
+
+  wsData.push([]);
+  const sumRow=(lbl,val)=>[{v:lbl,s:{font:{bold:true,sz:10},alignment:{horizontal:'right'}}},null,null,null,null,null,{v:val,s:{font:{bold:true,sz:10,color:{rgb:'C9A84C'}},numFmt:'$#,##0.00',alignment:{horizontal:'center'}}}];
+  wsData.push(sumRow('Total productos:', totalProd));
+  wsData.push(sumRow('Total impuestos:', imp));
+  wsData.push(sumRow('Flete:', flete));
+  wsData.push(sumRow('Honorarios aduana:', hon));
+  wsData.push(sumRow('Seguro (1%):', seguro));
+  wsData.push([{v:'TOTAL FINAL (USD):',s:{font:{bold:true,sz:13,color:{rgb:'C9A84C'}},alignment:{horizontal:'right'}}},null,null,null,null,null,{v:total,s:{font:{bold:true,sz:14,color:{rgb:'C9A84C'}},numFmt:'$#,##0.00',alignment:{horizontal:'center'}}}]);
+
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  ws['!merges']=[
+    {s:{r:0,c:0},e:{r:0,c:7}},{s:{r:1,c:0},e:{r:1,c:7}}
+  ];
+  ws['!cols']=[{wch:14},{wch:10},{wch:20},{wch:26},{wch:12},{wch:12},{wch:10},{wch:14}];
+  XLSX.utils.book_append_sheet(wb,ws,'Pro Forma');
+
+  const filename=`ImportPremium_ProForma_${cliente}.xlsx`;
+  XLSX.writeFile(wb,filename);
+
+  // Subir a Drive si está configurado
+  const wbout=XLSX.write(wb,{bookType:'xlsx',type:'base64'});
+  subirADrive(wbout,filename);
+  toast('⬇ Excel descargado');
+}
+
+// ── Export PDF ────────────────────────────────────────────────
+async function exportPDF(){
+  toast('📄 Generando PDF...',5000);
+  // Ocultar botones para el screenshot
+  document.querySelectorAll('.export-bar,.btn-add,.btn-upload-excel,.td-del,.img-btn').forEach(el=>el.style.visibility='hidden');
+  try{
+    const {jsPDF}=window.jspdf;
+    const canvas=await html2canvas(document.body,{scale:1.5,useCORS:true,backgroundColor:'#0D0D0D'});
+    const img=canvas.toDataURL('image/jpeg',0.92);
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pW=pdf.internal.pageSize.getWidth();
+    const pH=pdf.internal.pageSize.getHeight();
+    const iW=canvas.width, iH=canvas.height;
+    const ratio=pW/iW;
+    const pages=Math.ceil((iH*ratio)/pH);
+    for(let p=0;p<pages;p++){
+      if(p>0) pdf.addPage();
+      pdf.addImage(img,'JPEG',0,-p*pH,pW,iH*ratio);
+    }
+    pdf.save(`ImportPremium_ProForma_${$('c-nombre').value||'cliente'}.pdf`);
+    toast('✅ PDF descargado');
+  } catch(err){ toast('❌ Error al generar PDF: '+err.message); }
+  document.querySelectorAll('.export-bar,.btn-add,.btn-upload-excel,.td-del,.img-btn').forEach(el=>el.style.visibility='');
+}
+
+// ── Subir a Drive ─────────────────────────────────────────────
+async function subirADrive(base64,filename){
+  if(!APPS_SCRIPT_URL||APPS_SCRIPT_URL==='PEGA_AQUI_TU_URL_DE_APPS_SCRIPT') return;
+  const ds=$('drive-status');
+  ds.textContent='☁ Guardando en Drive...'; ds.style.color='#2980b9'; ds.style.display='block';
+  try{
+    const r=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename,base64})});
+    const d=await r.json();
+    if(d.status==='ok'){
+      ds.innerHTML='✅ Guardado en Drive: <a href="'+d.url+'" target="_blank" style="color:var(--gold);text-decoration:underline">Ver archivo</a>';
+    } else { ds.textContent='❌ Error Drive: '+(d.error||'desconocido'); }
+  } catch(e){ ds.textContent='❌ No se conectó con Drive'; }
+}
+</script>
+</body>
+</html>
