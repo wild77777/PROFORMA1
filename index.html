@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Import Premium – Cotizador Profesional</title>
+<title>JNL – Cotizador Profesional</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -260,21 +260,21 @@ td input:focus{outline:none;border-color:var(--gold)}
     </div>
     <input type="file" id="logo-input" accept="image/*" onchange="loadLogo()"/>
     <div class="brand">
-      <div class="brand-name">IMPORT PREMIUM</div>
+      <div class="brand-name">JNL</div>
       <div class="brand-tag">Somos tu mejor opción</div>
     </div>
     <div class="header-contact">
       <span class="hc-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        Riobamba, Ecuador
+        Guayaquil, Ecuador
       </span>
-      <a class="hc-item" href="mailto:plpremiun2024@gmail.com">
+      <a class="hc-item" href="mailto:JNLECUADORGYE@gmail.com">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        plpremiun2024@gmail.com
+        JNLECUADORGYE@gmail.com
       </a>
-      <a class="hc-item" href="https://wa.me/593963357403">
+      <a class="hc-item" href="https://wa.me/593998067935">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.12.96.36 1.91.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.58 2.81.7A2 2 0 0122 14.92z"/></svg>
-        +593 96 335 7403
+        0998067935
       </a>
     </div>
   </div>
@@ -293,7 +293,7 @@ td input:focus{outline:none;border-color:var(--gold)}
     <div class="field s2"><label>Nombre completo</label><input id="c-nombre" placeholder="Juan Pérez García"/></div>
     <div class="field"><label>Fecha de emisión</label><div class="auto-val" id="c-fecha"></div></div>
     <div class="field s2"><label>Dirección</label><input id="c-dir" placeholder="Av. Principal 123"/></div>
-    <div class="field"><label>Ciudad</label><input id="c-ciudad" placeholder="Riobamba"/></div>
+    <div class="field"><label>Ciudad</label><input id="c-ciudad" placeholder="Guayaquil"/></div>
     <div class="field">
       <label>País</label>
       <select id="c-pais">
@@ -575,7 +575,7 @@ td input:focus{outline:none;border-color:var(--gold)}
     <div class="gt-rmb" id="grand-rmb"></div>
   </div>
 </div>
-<div class="nota" style="margin-top:10px">Esta cotización tiene validez de 15 días · Gracias por su preferencia – IMPORT PREMIUM</div>
+<div class="nota" style="margin-top:10px">Esta cotización tiene validez de 15 días · Gracias por su preferencia – JNL</div>
 
 <!-- ══ EXPORTAR ══ -->
 <div class="card" style="margin-top:16px">
@@ -828,8 +828,8 @@ function exportExcel(){
   const mc=(v,s,t)=>({v,s,t:t||(typeof v==='number'?'n':'s')});
 
   const wsData=[];
-  wsData.push([mc('IMPORT PREMIUM',S({bold:true,sz:20,color:{rgb:GOLD}},DARK,cen)),null,null,null,null,null,null,null]);
-  wsData.push([mc('Riobamba, Ecuador  ·  plpremiun2024@gmail.com  ·  +593 96 335 7403',S({sz:9,color:{rgb:'9CA3AF'}},DARK,cen)),null,null,null,null,null,null,null]);
+  wsData.push([mc('JNL',S({bold:true,sz:20,color:{rgb:GOLD}},DARK,cen)),null,null,null,null,null,null,null]);
+  wsData.push([mc('Guayaquil, Ecuador  ·  JNLECUADORGYE@gmail.com  ·  0998067935',S({sz:9,color:{rgb:'9CA3AF'}},DARK,cen)),null,null,null,null,null,null,null]);
   wsData.push([mc('COTIZACIÓN DE IMPORTACIÓN  ·  '+$('proforma-num').textContent,S({bold:true,sz:11,color:{rgb:WHITE}},'374151',cen)),null,null,null,null,null,null,null]);
   wsData.push([]);
   wsData.push([mc('Cliente:',S({bold:true,sz:10,color:{rgb:'374151'}},LGRAY,left)),null,mc($('c-nombre').value||'',S({sz:10},'FFFFFF',left)),null,mc('Fecha:',S({bold:true,sz:10,color:{rgb:'374151'}},LGRAY,right)),null,mc($('c-fecha').textContent,S({sz:10},'FFFFFF',cen)),null]);
@@ -873,7 +873,7 @@ function exportExcel(){
   for(let i=0;i<24;i++){try{ws['!merges'].push(M(base+i,0,base+i,5));ws['!merges'].push(M(base+i,6,base+i,7));}catch(e){}}
   ws['!cols']=[{wch:12},{wch:10},{wch:22},{wch:22},{wch:12},{wch:12},{wch:14},{wch:3}];
   XLSX.utils.book_append_sheet(wb,ws,'Cotización');
-  const fname=`ImportPremium_${$('c-nombre').value||'cotizacion'}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  const fname=`JNL_${$('c-nombre').value||'cotizacion'}_${new Date().toISOString().slice(0,10)}.xlsx`;
   XLSX.writeFile(wb,fname);
   const wbout=XLSX.write(wb,{bookType:'xlsx',type:'base64'});
   subirADrive(wbout,fname);
@@ -893,7 +893,7 @@ async function exportPDF(){
     const ratio=pW/canvas.width;
     const pages=Math.ceil((canvas.height*ratio)/pH);
     for(let p=0;p<pages;p++){if(p>0)pdf.addPage();pdf.addImage(img,'JPEG',0,-p*pH,pW,canvas.height*ratio);}
-    pdf.save(`ImportPremium_${$('c-nombre').value||'cotizacion'}.pdf`);
+    pdf.save(`JNL_${$('c-nombre').value||'cotizacion'}.pdf`);
     toast('✅ PDF descargado');
   }catch(e){toast('❌ Error PDF: '+e.message);}
   document.querySelectorAll('.export-bar,.btn-add,.btn-load-excel,.td-del,.img-btn').forEach(el=>el.style.visibility='');
