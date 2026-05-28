@@ -192,6 +192,36 @@ td input:focus{outline:none;border-color:var(--gold)}
 
 .drive-status{display:none;margin-top:12px;padding:10px 16px;border-radius:var(--radius);background:var(--gray-50);font-size:13px;text-align:center;border:1px solid var(--gray-200)}
 
+/* ══ COSTOS ADICIONALES (CHINA / ECUADOR) ══ */
+/* Grid de 2 columnas (China + Ecuador lado a lado) */
+.ca-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.ca-grid{grid-template-columns:1fr;gap:14px}}
+/* China — vista estática tipo planilla */
+.ca-china-header{font-size:14px;font-weight:700;color:var(--gray-900);padding:10px 14px;background:#E8EFF7;border:1px solid #C7D6E8;border-radius:var(--radius);margin-bottom:0;letter-spacing:.02em}
+.ca-china-table{border:1px solid #C7D6E8;border-top:none;border-radius:0 0 var(--radius) var(--radius);overflow:hidden}
+.ca-china-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;font-size:13px;color:var(--gray-900);background:#F3F7FB;border-bottom:1px solid #DCE6F2}
+.ca-china-row:last-child{border-bottom:none}
+.ca-china-row span:first-child{font-weight:600}
+.ca-china-row span:last-child{font-weight:500;color:var(--gray-700);text-align:right}
+.ca-china-subtotal{background:#D6E3F1;font-weight:700}
+.ca-china-subtotal span:first-child,.ca-china-subtotal span:last-child{font-weight:700;color:var(--gray-900)}
+.ca-china-input{border:none;background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--gray-700);font-weight:500;text-align:right;width:140px;padding:2px 4px;border-radius:4px;transition:background .15s,box-shadow .15s;cursor:text}
+.ca-china-input:hover{background:rgba(255,255,255,.7)}
+.ca-china-input:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--gold-border);color:var(--gray-900)}
+.ca-china-input-total{font-weight:700;color:var(--gray-900);font-size:13px}
+
+/* Ecuador — sigue siendo editable */
+.ca-row{display:flex;align-items:center;justify-content:space-between;padding:8px 4px;border-bottom:1px solid var(--gray-100);gap:10px;flex-wrap:wrap}
+.ca-row:last-child{border-bottom:none}
+.ca-row-lbl{font-size:13px;color:var(--gray-700);flex:1;min-width:200px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ca-row-hint{font-size:11px;color:var(--gray-400);font-style:italic;font-weight:400;opacity:.85;white-space:nowrap}
+.ca-row-input{border:1px solid var(--gray-200);border-radius:6px;padding:6px 10px;font-size:13px;width:140px;text-align:right;font-family:'Inter',sans-serif;color:var(--gray-900);background:var(--white);transition:border .2s}
+.ca-row-input:focus{outline:none;border-color:var(--gold)}
+.ca-row-input::placeholder{color:var(--gray-300);font-style:italic;opacity:.7}
+@media(max-width:700px){
+  .ca-row-input{width:100%}
+}
+
 /* ══ DIVIDER ══ */
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--gray-200),transparent);margin:4px 0}
 
@@ -371,7 +401,7 @@ td input:focus{outline:none;border-color:var(--gold)}
   <!-- CIF -->
   <div class="cif-bar">
     <div>
-      <span class="cif-bar-label">Base CIF (Costo + Flete)</span>
+      <span class="cif-bar-label">Base CIF (Costo + Flete + Seguro)</span>
       <div style="font-size:11px;color:var(--gray-500);margin-top:2px">Base sobre la que se calculan Ad-Valorem, FODINFA e ICE</div>
     </div>
     <span class="cif-bar-val" id="val-cif">$0.00</span>
@@ -498,6 +528,43 @@ td input:focus{outline:none;border-color:var(--gold)}
   </div>
 </div>
 
+<!-- ══ COSTOS ADICIONALES (CHINA + ECUADOR) ══ -->
+<div class="card">
+  <div class="card-header">
+    <div class="card-icon">🚢</div>
+    <div class="card-title">Costos Adicionales</div>
+    <div class="card-badge gold">Origen + Destino</div>
+  </div>
+
+  <div class="ca-grid">
+    <!-- CHINA -->
+    <div>
+      <div class="ca-china-header">COSTOS ADICIONALES EN ORIGEN (CHINA):</div>
+      <div class="ca-china-table">
+        <div class="ca-china-row"><span>Gastos locales origen (OFC):</span><input type="text" class="ca-china-input" id="ca-cn-0" value="$200 - $400" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>THC (carga al contenedor):</span><input type="text" class="ca-china-input" id="ca-cn-1" value="$150 - $300" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Sellado del contenedor:</span><input type="text" class="ca-china-input" id="ca-cn-2" value="$30 - $50" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Documentación:</span><input type="text" class="ca-china-input" id="ca-cn-3" value="$50 - $100" oninput="recalcAll()"/></div>
+        <div class="ca-china-row ca-china-subtotal"><span>SUBTOTAL CHINA:</span><input type="text" class="ca-china-input ca-china-input-total" id="ca-cn-sub" value="$430 - $850" oninput="recalcAll()"/></div>
+      </div>
+    </div>
+
+    <!-- ECUADOR -->
+    <div>
+      <div class="ca-china-header">COSTOS ADICIONALES EN ECUADOR:</div>
+      <div class="ca-china-table">
+        <div class="ca-china-row"><span>Descarga (THC):</span><input type="text" class="ca-china-input" id="ca-ec-0" value="$250 - $400" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Gate in/out:</span><input type="text" class="ca-china-input" id="ca-ec-1" value="$100 - $150" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Almacenaje (3 días gratis):</span><input type="text" class="ca-china-input" id="ca-ec-2" value="$0 (luego $30/día)" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Inspección no intrusiva:</span><input type="text" class="ca-china-input" id="ca-ec-3" value="$80 - $120" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Handling:</span><input type="text" class="ca-china-input" id="ca-ec-4" value="$100 - $200" oninput="recalcAll()"/></div>
+        <div class="ca-china-row"><span>Transmisión electrónica:</span><input type="text" class="ca-china-input" id="ca-ec-5" value="$30 - $50" oninput="recalcAll()"/></div>
+        <div class="ca-china-row ca-china-subtotal"><span>SUBTOTAL ECUADOR:</span><input type="text" class="ca-china-input ca-china-input-total" id="ca-ec-sub" value="$560 - $920" oninput="recalcAll()"/></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ VALORES ADICIONALES ══ -->
 <div class="card">
   <div class="card-header">
@@ -537,13 +604,22 @@ td input:focus{outline:none;border-color:var(--gold)}
         </div>
       </div>
 
-      <!-- Seguro: 1% fijo sin texto extra -->
+      <!-- Seguro: selector 1% / 2% / 3% (default 1%) -->
       <div class="adic-item highlight-row">
         <div class="adic-item-left">
           <span class="adic-item-lbl">Seguro</span>
-          <span class="adic-item-badge">1% — automático</span>
+          <span class="adic-item-sub">% sobre total productos</span>
         </div>
-        <span class="adic-item-val gold" id="val-seguro-adic">$0.00</span>
+        <div class="adic-item-right">
+          <div class="adic-pct-wrap">
+            <select id="pct-seguro" onchange="recalcAll()" style="border:1px solid var(--gold-border);border-radius:6px;padding:6px 8px;font-size:13px;font-weight:600;color:var(--gold);background:var(--gold-bg);font-family:'Inter',sans-serif;cursor:pointer">
+              <option value="1" selected>1%</option>
+              <option value="2">2%</option>
+              <option value="3">3%</option>
+            </select>
+          </div>
+          <span class="adic-item-val gold" id="val-seguro-adic">$0.00</span>
+        </div>
       </div>
 
       <div class="adic-total-row">
@@ -559,7 +635,9 @@ td input:focus{outline:none;border-color:var(--gold)}
       <div class="res-row"><span class="lbl">Total impuestos aduana</span><span class="val" id="res-impuestos">$0.00</span></div>
       <div class="res-row"><span class="lbl">Flete</span><span class="val" id="res-flete">$0.00</span></div>
       <div class="res-row"><span class="lbl">Honorarios aduana</span><span class="val" id="res-honorarios">$0.00</span></div>
-      <div class="res-row"><span class="lbl">Seguro (1%)</span><span class="val" id="res-seguro">$0.00</span></div>
+      <div class="res-row"><span class="lbl" id="lbl-res-seguro">Seguro (1%)</span><span class="val" id="res-seguro">$0.00</span></div>
+      <div class="res-row"><span class="lbl">Costo origen exterior</span><span class="val" id="res-china">—</span></div>
+      <div class="res-row"><span class="lbl">Costo origen Ecuador</span><span class="val" id="res-ecuador">—</span></div>
     </div>
   </div>
 </div>
@@ -622,6 +700,16 @@ function toast(msg,dur=3000){const t=$('toast');t.textContent=msg;t.classList.ad
   updateEx();
   addRow();addRow();addRow();
 })();
+
+// ── Costos Adicionales (China + Ecuador, ambos estáticos con subtotal editable) ────
+// Parsea un texto como "$430 - $850" o "$500" → número (promedio si es rango)
+function parseSubtotal(txt){
+  if(!txt)return 0;
+  const nums=txt.match(/[\d.,]+/g);
+  if(!nums||!nums.length)return 0;
+  const vals=nums.map(n=>parseFloat(n.replace(/,/g,''))||0);
+  return vals.length>=2?(vals[0]+vals[1])/2:vals[0];
+}
 
 function loadLogo(){
   const f=$('logo-input').files[0];if(!f)return;
@@ -701,29 +789,33 @@ function recalcAll(){
   // 2. FLETE
   const flete=parseFloat($('val-flete-in').value)||0;
 
-  // 3. CIF = Total Productos + Flete
-  const cif=totalProd+flete;
+  // 3. SEGURO = % seleccionado × Total Productos  (1% / 2% / 3%)
+  const pctSeguro=parseFloat($('pct-seguro')?.value)||1;
+  const seguro=totalProd*(pctSeguro/100);
+
+  // 4. CIF = Total Productos + Flete + Seguro
+  const cif=totalProd+flete+seguro;
   $('val-cif').textContent=fmtUSD(cif);
 
-  // 4. AD-VALOREM = % seleccionado × CIF
+  // 5. AD-VALOREM = % seleccionado × CIF
   const pctAdv=parseFloat($('sel-advalorem').value)||0;
   const advalorem=cif*(pctAdv/100);
 
-  // 5. FODINFA = 0.5% × CIF  (fijo)
+  // 6. FODINFA = 0.5% × CIF  (fijo)
   const fodinfa=cif*0.005;
 
-  // 6. ICE = % seleccionado × CIF
+  // 7. ICE = % seleccionado × CIF
   const pctIce=parseFloat($('sel-ice').value)||0;
   const ice=cif*(pctIce/100);
 
-  // 7. IVA = 15% × (CIF + Ad-Valorem + FODINFA + ICE)  (fijo)
+  // 8. IVA = 15% × (CIF + Ad-Valorem + FODINFA + ICE)  (fijo)
   const baseIva=cif+advalorem+fodinfa+ice;
   const iva=baseIva*0.15;
 
-  // 8. ISD = 0.5% × Total Productos  (fijo)
+  // 9. ISD = 0.5% × Total Productos  (fijo)
   const isd=totalProd*0.005;
 
-  // 9. Seguro + Comisión Banco = 2% × Total Productos  (fijo)
+  // 10. Seguro + Comisión Banco = 2% × Total Productos  (fijo)
   const segBanco=totalProd*0.02;
 
   const totalImp=advalorem+fodinfa+ice+iva+isd+segBanco;
@@ -736,9 +828,8 @@ function recalcAll(){
   $('val-seg-banco').textContent=fmtUSD(segBanco);
   $('val-total-imp').textContent=fmtUSD(totalImp);
 
-  // 10. ADICIONALES
+  // 11. ADICIONALES
   const honorarios=totalProd*(parseFloat($('pct-honorarios').value)||7)/100;
-  const seguro=totalProd*0.01;
   const totalAdic=honorarios+flete+seguro;
 
   $('val-honorarios').textContent=fmtUSD(honorarios);
@@ -752,15 +843,27 @@ function recalcAll(){
   $('res-flete').textContent=fmtUSD(flete);
   $('res-honorarios').textContent=fmtUSD(honorarios);
   $('res-seguro').textContent=fmtUSD(seguro);
+  const lblSeg=$('lbl-res-seguro');if(lblSeg)lblSeg.textContent='Seguro ('+pctSeguro+'%)';
+
+  // 11.b COSTOS ADICIONALES ORIGEN
+  // China y Ecuador: subtotales editables como texto → se parsean a número (promedio si es rango)
+  const chinaTxt=($('ca-cn-sub')?.value||'').trim();
+  const ecuadorTxt=($('ca-ec-sub')?.value||'').trim();
+  const totalChina=parseSubtotal(chinaTxt);
+  const totalEcuador=parseSubtotal(ecuadorTxt);
+  const chinaIsRange=(chinaTxt.match(/[\d.,]+/g)||[]).length>=2;
+  const ecuadorIsRange=(ecuadorTxt.match(/[\d.,]+/g)||[]).length>=2;
+  if($('res-china'))$('res-china').textContent=totalChina?fmtUSD(totalChina)+(chinaIsRange?' (prom.)':''):'—';
+  if($('res-ecuador'))$('res-ecuador').textContent=totalEcuador?fmtUSD(totalEcuador)+(ecuadorIsRange?' (prom.)':''):'—';
 
   // 12. TOTAL FINAL
-  const totalFinal=totalProd+totalImp+totalAdic;
+  const totalFinal=totalProd+totalImp+totalAdic+totalChina+totalEcuador;
   $('grand-total').textContent=fmtUSD(totalFinal);
   $('grand-rmb').textContent=`≈ RMB ${(totalFinal*tc()).toFixed(2)}`;
   $('badge-items').textContent=rows.length+' producto'+(rows.length!==1?'s':'');
 }
 
-['tasa','pct-honorarios','val-flete-in','sel-advalorem','sel-ice']
+['tasa','pct-honorarios','pct-seguro','val-flete-in','sel-advalorem','sel-ice','ca-cn-sub','ca-ec-sub']
   .forEach(id=>$(id)?.addEventListener('input',recalcAll));
 
 // ── Carga Excel ──────────────────────────────────────
@@ -804,7 +907,9 @@ function exportExcel(){
     totalProd+=(rmb/t)*qty;
   });
   const flete=parseFloat($('val-flete-in').value)||0;
-  const cif=totalProd+flete;
+  const pctSeguro=parseFloat($('pct-seguro')?.value)||1;
+  const seguro=totalProd*(pctSeguro/100);
+  const cif=totalProd+flete+seguro;
   const pctAdv=parseFloat($('sel-advalorem').value)||0;
   const advalorem=cif*(pctAdv/100);
   const fodinfa=cif*0.005;
@@ -815,7 +920,6 @@ function exportExcel(){
   const segBanco=totalProd*0.02;
   const totalImp=advalorem+fodinfa+ice+iva+isd+segBanco;
   const honorarios=totalProd*(parseFloat($('pct-honorarios').value)||7)/100;
-  const seguro=totalProd*0.01;
   const totalAdic=honorarios+flete+seguro;
   const totalFinal=totalProd+totalImp+totalAdic;
 
@@ -860,7 +964,7 @@ function exportExcel(){
   wsData.push([mc('VALORES ADICIONALES',S({bold:true,sz:11,color:{rgb:WHITE}},'374151',cen)),null,null,null,null,null,null,null]);
   wsData.push(iRow(`Honorarios Aduana (${parseFloat($('pct-honorarios').value)||7}%)`,honorarios));
   wsData.push(iRow('Flete',flete));
-  wsData.push(iRow('Seguro (1% automático)',seguro));
+  wsData.push(iRow(`Seguro (${pctSeguro}%)`,seguro));
   wsData.push([mc('TOTAL ADICIONALES:',S({bold:true,sz:12,color:{rgb:WHITE}},DARK,right)),null,null,null,null,null,mc(totalAdic,S({bold:true,sz:13,color:{rgb:GOLD}},DARK,cen),'n'),null]);
   wsData.push([]);
   wsData.push([mc('★  TOTAL FINAL A PAGAR (USD):',S({bold:true,sz:14,color:{rgb:GOLD}},'111827',right)),null,null,null,null,null,mc(totalFinal,S({bold:true,sz:16,color:{rgb:GOLD}},'111827',{horizontal:'right',vertical:'center'}),'n'),null]);
