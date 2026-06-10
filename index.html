@@ -209,6 +209,7 @@ td input:focus{outline:none;border-color:var(--gold)}
 .ca-china-input:hover{background:rgba(255,255,255,.7)}
 .ca-china-input:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--gold-border);color:var(--gray-900)}
 .ca-china-input-total{font-weight:700;color:var(--gray-900);font-size:13px}
+.ca-hint{font-size:11px;color:var(--gray-400);font-weight:400;font-style:italic;margin-left:4px;white-space:nowrap}
 
 /* Ecuador — sigue siendo editable */
 .ca-row{display:flex;align-items:center;justify-content:space-between;padding:8px 4px;border-bottom:1px solid var(--gray-100);gap:10px;flex-wrap:wrap}
@@ -541,11 +542,26 @@ td input:focus{outline:none;border-color:var(--gold)}
     <div>
       <div class="ca-china-header">COSTOS ADICIONALES EN ORIGEN (CHINA):</div>
       <div class="ca-china-table">
-        <div class="ca-china-row"><span>Gastos locales origen (OFC):</span><input type="text" class="ca-china-input" id="ca-cn-0" value="$200 - $400" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>THC (carga al contenedor):</span><input type="text" class="ca-china-input" id="ca-cn-1" value="$150 - $300" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Sellado del contenedor:</span><input type="text" class="ca-china-input" id="ca-cn-2" value="$30 - $50" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Documentación:</span><input type="text" class="ca-china-input" id="ca-cn-3" value="$50 - $100" oninput="recalcAll()"/></div>
-        <div class="ca-china-row ca-china-subtotal"><span>SUBTOTAL CHINA:</span><input type="text" class="ca-china-input ca-china-input-total" id="ca-cn-sub" value="$430 - $850" oninput="recalcAll()"/></div>
+        <div class="ca-china-row">
+          <span>Gastos locales origen (OFC): <span class="ca-hint">$200 - $400</span></span>
+          <input type="number" class="ca-china-input" id="ca-cn-0" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>THC (carga al contenedor): <span class="ca-hint">$150 - $300</span></span>
+          <input type="number" class="ca-china-input" id="ca-cn-1" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Sellado del contenedor: <span class="ca-hint">$30 - $50</span></span>
+          <input type="number" class="ca-china-input" id="ca-cn-2" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Documentación: <span class="ca-hint">$50 - $100</span></span>
+          <input type="number" class="ca-china-input" id="ca-cn-3" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row ca-china-subtotal">
+          <span>SUBTOTAL CHINA: <span class="ca-hint">($430 - $850)</span></span>
+          <span class="ca-china-input-total" id="ca-cn-sub">$0.00</span>
+        </div>
       </div>
     </div>
 
@@ -553,13 +569,34 @@ td input:focus{outline:none;border-color:var(--gold)}
     <div>
       <div class="ca-china-header">COSTOS ADICIONALES EN ECUADOR:</div>
       <div class="ca-china-table">
-        <div class="ca-china-row"><span>Descarga (THC):</span><input type="text" class="ca-china-input" id="ca-ec-0" value="$250 - $400" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Gate in/out:</span><input type="text" class="ca-china-input" id="ca-ec-1" value="$100 - $150" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Almacenaje (3 días gratis):</span><input type="text" class="ca-china-input" id="ca-ec-2" value="$0 (luego $30/día)" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Inspección no intrusiva:</span><input type="text" class="ca-china-input" id="ca-ec-3" value="$80 - $120" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Handling:</span><input type="text" class="ca-china-input" id="ca-ec-4" value="$100 - $200" oninput="recalcAll()"/></div>
-        <div class="ca-china-row"><span>Transmisión electrónica:</span><input type="text" class="ca-china-input" id="ca-ec-5" value="$30 - $50" oninput="recalcAll()"/></div>
-        <div class="ca-china-row ca-china-subtotal"><span>SUBTOTAL ECUADOR:</span><input type="text" class="ca-china-input ca-china-input-total" id="ca-ec-sub" value="$560 - $920" oninput="recalcAll()"/></div>
+        <div class="ca-china-row">
+          <span>Descarga (THC): <span class="ca-hint">$250 - $400</span></span>
+          <input type="number" class="ca-china-input" id="ca-ec-0" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Gate in/out: <span class="ca-hint">$100 - $150</span></span>
+          <input type="number" class="ca-china-input" id="ca-ec-1" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Almacenaje (3 días gratis): <span class="ca-hint">$0 (luego $30/día)</span></span>
+          <input type="number" class="ca-china-input" id="ca-ec-2" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Inspección no intrusiva: <span class="ca-hint">$80 - $120</span></span>
+          <input type="number" class="ca-china-input" id="ca-ec-3" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Handling: <span class="ca-hint">$100 - $200</span></span>
+          <input type="number" class="ca-china-input" id="ca-ec-4" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row">
+          <span>Transmisión electrónica: <span class="ca-hint">$30 - $50</span></span>
+          <input type="number" class="ca-china-input" id="ca-ec-5" placeholder="0.00" min="0" step="0.01" oninput="recalcAll()"/>
+        </div>
+        <div class="ca-china-row ca-china-subtotal">
+          <span>SUBTOTAL ECUADOR: <span class="ca-hint">($560 - $920)</span></span>
+          <span class="ca-china-input-total" id="ca-ec-sub">$0.00</span>
+        </div>
       </div>
     </div>
   </div>
@@ -636,8 +673,8 @@ td input:focus{outline:none;border-color:var(--gold)}
       <div class="res-row"><span class="lbl">Flete</span><span class="val" id="res-flete">$0.00</span></div>
       <div class="res-row"><span class="lbl">Honorarios aduana</span><span class="val" id="res-honorarios">$0.00</span></div>
       <div class="res-row"><span class="lbl" id="lbl-res-seguro">Seguro (1%)</span><span class="val" id="res-seguro">$0.00</span></div>
-      <div class="res-row"><span class="lbl">Costo origen exterior</span><span class="val" id="res-china">—</span></div>
-      <div class="res-row"><span class="lbl">Costo origen Ecuador</span><span class="val" id="res-ecuador">—</span></div>
+      <div class="res-row"><span class="lbl">Costo origen exterior</span><span class="val" id="res-china">$0.00</span></div>
+      <div class="res-row"><span class="lbl">Costo origen Ecuador</span><span class="val" id="res-ecuador">$0.00</span></div>
     </div>
   </div>
 </div>
@@ -701,14 +738,13 @@ function toast(msg,dur=3000){const t=$('toast');t.textContent=msg;t.classList.ad
   addRow();addRow();addRow();
 })();
 
-// ── Costos Adicionales (China + Ecuador, ambos estáticos con subtotal editable) ────
-// Parsea un texto como "$430 - $850" o "$500" → número (promedio si es rango)
-function parseSubtotal(txt){
-  if(!txt)return 0;
-  const nums=txt.match(/[\d.,]+/g);
-  if(!nums||!nums.length)return 0;
-  const vals=nums.map(n=>parseFloat(n.replace(/,/g,''))||0);
-  return vals.length>=2?(vals[0]+vals[1])/2:vals[0];
+// ── Costos Adicionales (China + Ecuador): subtotal = suma de filas ────
+function sumRows(prefix,count){
+  let total=0;
+  for(let i=0;i<count;i++){
+    total+=parseFloat($(`${prefix}-${i}`)?.value)||0;
+  }
+  return total;
 }
 
 function loadLogo(){
@@ -846,15 +882,13 @@ function recalcAll(){
   const lblSeg=$('lbl-res-seguro');if(lblSeg)lblSeg.textContent='Seguro ('+pctSeguro+'%)';
 
   // 11.b COSTOS ADICIONALES ORIGEN
-  // China y Ecuador: subtotales editables como texto → se parsean a número (promedio si es rango)
-  const chinaTxt=($('ca-cn-sub')?.value||'').trim();
-  const ecuadorTxt=($('ca-ec-sub')?.value||'').trim();
-  const totalChina=parseSubtotal(chinaTxt);
-  const totalEcuador=parseSubtotal(ecuadorTxt);
-  const chinaIsRange=(chinaTxt.match(/[\d.,]+/g)||[]).length>=2;
-  const ecuadorIsRange=(ecuadorTxt.match(/[\d.,]+/g)||[]).length>=2;
-  if($('res-china'))$('res-china').textContent=totalChina?fmtUSD(totalChina)+(chinaIsRange?' (prom.)':''):'—';
-  if($('res-ecuador'))$('res-ecuador').textContent=totalEcuador?fmtUSD(totalEcuador)+(ecuadorIsRange?' (prom.)':''):'—';
+  // China (4 filas) y Ecuador (6 filas): subtotal = suma de cada fila
+  const totalChina=sumRows('ca-cn',4);
+  const totalEcuador=sumRows('ca-ec',6);
+  if($('ca-cn-sub'))$('ca-cn-sub').textContent=fmtUSD(totalChina);
+  if($('ca-ec-sub'))$('ca-ec-sub').textContent=fmtUSD(totalEcuador);
+  if($('res-china'))$('res-china').textContent=fmtUSD(totalChina);
+  if($('res-ecuador'))$('res-ecuador').textContent=fmtUSD(totalEcuador);
 
   // 12. TOTAL FINAL
   const totalFinal=totalProd+totalImp+totalAdic+totalChina+totalEcuador;
@@ -863,7 +897,7 @@ function recalcAll(){
   $('badge-items').textContent=rows.length+' producto'+(rows.length!==1?'s':'');
 }
 
-['tasa','pct-honorarios','pct-seguro','val-flete-in','sel-advalorem','sel-ice','ca-cn-sub','ca-ec-sub']
+['tasa','pct-honorarios','pct-seguro','val-flete-in','sel-advalorem','sel-ice']
   .forEach(id=>$(id)?.addEventListener('input',recalcAll));
 
 // ── Carga Excel ──────────────────────────────────────
